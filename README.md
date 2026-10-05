@@ -9,7 +9,7 @@ The agent drafts. A named teacher approves. It never delivers a verdict on a chi
 ## Run it (one command)
 
 ```bash
-git clone https://github.com/<benedictmusyoka>/learner-profile-mcp && cd learner-profile-mcp && python quickstart.py
+git clone https://github.com/benedictmusyoka/learner-profile-mcp && cd learner-profile-mcp && python quickstart.py
 ```
 
 Needs Python 3.10+ and internet for `pip`. It creates a virtualenv, installs the one dependency,
