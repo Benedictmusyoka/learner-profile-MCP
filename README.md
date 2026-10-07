@@ -9,7 +9,7 @@ The agent drafts. A named teacher approves. It never delivers a verdict on a chi
 ## Run it (one command)
 
 ```bash
-git clone https://github.com/<your-username>/learner-profile-mcp && cd learner-profile-mcp && python quickstart.py
+git clone https://github.com/<Benedictmusyoka>/learner-profile-mcp && cd learner-profile-mcp && python quickstart.py
 ```
 
 Needs Python 3.10+ and internet for `pip`. It creates a virtualenv, installs the one dependency,
@@ -19,7 +19,7 @@ Then, as the teacher:
 
 ```bash
 .venv/bin/python approve.py list
-.venv/bin/python approve.py approve 1 --by "Your Name"     # Windows: .venv\Scripts\python
+.venv/bin/python approve.py approve 1 --by "Benedictmusyoka"     # Windows: .venv\Scripts\python
 ```
 
 ## What problem this addresses
