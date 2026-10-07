@@ -9,7 +9,7 @@ The agent drafts. A named teacher approves. It never delivers a verdict on a chi
 ## Run it (one command)
 
 ```bash
-git clone https://github.com/Benedictmusyoka/learner-profile-mcp && cd learner-profile-mcp && python quickstart.py
+git clone https://github.com/<your-username>/learner-profile-mcp && cd learner-profile-mcp && python quickstart.py
 ```
 
 Needs Python 3.10+ and internet for `pip`. It creates a virtualenv, installs the one dependency,
@@ -19,7 +19,7 @@ Then, as the teacher:
 
 ```bash
 .venv/bin/python approve.py list
-.venv/bin/python approve.py approve 1 --by "Benedictmusyoka"     # Windows: .venv\Scripts\python
+.venv/bin/python approve.py approve 1 --by "Your Name"     # Windows: .venv\Scripts\python
 ```
 
 ## What problem this addresses
@@ -47,12 +47,38 @@ teacher/app --add_evidence--> [pending] --get_profile--> open-weights model draf
 
 `approve.py` is **deliberately not an MCP tool**, so no agent can approve its own work. Approvals record who, when and which model drafted.
 
+See [ARCHITECTURE.md](ARCHITECTURE.md) for the agent design and why the MCP server is custom-built.
+
 ## Use with your own model or client
 
 - Real model: `ollama pull qwen2.5:7b` (or Llama, Gemma, Mistral, Aya), then `python quickstart.py` or
   `.venv/bin/python agent.py L-0042 --age 9-12`. Set `OLLAMA_MODEL` / `OLLAMA_HOST` to change.
 - Any MCP client (Claude Desktop, Cursor, etc.): command `python`, args `["/path/to/server.py"]`.
-- Tests: `python test_e2e.py`.
+- Tests: `python test_e2e.py` (local) and `python test_http.py` (hosted mode).
+- Evals: `python evals.py`. See [EVALS.md](EVALS.md) for results, including a known guardrail failure that is not fixed.
+
+## Hosted mode (a live endpoint)
+
+The same server can run over streamable HTTP with a teacher approval web page:
+
+```bash
+LP_AGENT_TOKEN=<16+ chars> LP_TEACHER_PASSWORD=<different, 12+ chars> .venv/bin/python http_server.py
+```
+
+| URL | Who | Auth |
+|---|---|---|
+| `/mcp` | Agents and MCP clients | `Authorization: Bearer <LP_AGENT_TOKEN>` |
+| `/teacher` | The teacher: review and approve or reject proposals | HTTP Basic: username = your name (recorded in the audit trail), password = `LP_TEACHER_PASSWORD` |
+| `/health` | Uptime checks | none |
+
+The two credentials are separate on purpose: an agent holding the bearer token **cannot approve anything**.
+The server refuses to start without both. Point the drafting agent at it with
+`MCP_URL=https://your-host/mcp LP_AGENT_TOKEN=... python agent.py L-0042`.
+
+**Deploy:** `render.yaml` (Render blueprint, needs a paid plan for the disk) or the `Dockerfile` on any host.
+Mount a persistent volume at `/data`, because learner data lives in SQLite. Put it behind HTTPS (hosts like Render do
+this for you). Add real learner data only after consent and a privacy review: this is a prototype with shared
+passwords, no per-user accounts and no rate limiting.
 
 ## Safeguards and honest limits
 
