@@ -1,0 +1,12 @@
+# One-click deploy on Render: New > Blueprint > pick this repo. Secrets are generated for you
+# (find them under the service's Environment tab). A disk keeps the SQLite file between deploys.
+services:
+  - type: web
+    name: learner-profile-mcp
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    disk: { name: data, mountPath: /data, sizeGB: 1 }
+    envVars:
+      - { key: LP_AGENT_TOKEN, generateValue: true }
+      - { key: LP_TEACHER_PASSWORD, generateValue: true }
